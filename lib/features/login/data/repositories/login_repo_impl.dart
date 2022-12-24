@@ -12,9 +12,9 @@ import '../datasources/login_service.dart';
 final loginRepoImplProvider = Provider(
   (ref) {
     final networkInfo = ref.watch(networkInfoProvider);
-
+    final cacheHelper = ref.read(cacheHelperProvider);
     return LoginRepoImpl(
-      loginService: LoginServiceImpl(),
+      loginService: LoginServiceImpl(cacheHelper),
       networkInfo: networkInfo,
     );
   },

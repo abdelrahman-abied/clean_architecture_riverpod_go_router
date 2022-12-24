@@ -1,4 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_go_router/core/utils/cache_helper.dart';
 import '../../../../features/users/data/models/user_model.dart';
 import '../../../../core/error/failures.dart';
 import 'package:dartz/dartz.dart';
@@ -11,9 +12,10 @@ import '../datasources/user_service.dart';
 final usersRepoImplProvider = Provider(
   (ref) {
     final networkInfo = ref.watch(networkInfoProvider);
+    final cacheHelper = ref.watch(cacheHelperProvider);
     return UsersRepoImpl(
       networkInfo: networkInfo,
-      usersService: UsersServiceImpl(),
+      usersService: UsersServiceImpl(cacheHelper: cacheHelper),
     );
   },
 );
@@ -21,8 +23,10 @@ final usersRepoImplProvider = Provider(
 class UsersRepoImpl extends UsersRepo {
   final NetworkInfo networkInfo;
   final UsersService usersService;
-
-  UsersRepoImpl({required this.networkInfo, required this.usersService});
+  UsersRepoImpl({
+    required this.networkInfo,
+    required this.usersService,
+  });
 
   @override
   Future<Either<Failure, List<Users>>> getUsers(int page) async {

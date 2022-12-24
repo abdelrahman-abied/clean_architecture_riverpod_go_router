@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
+
 import 'package:http/http.dart' as http;
-import '/core/api/end_points.dart';
-import '/core/api/status_code.dart';
-import '/core/constants/constants.dart';
-import '/core/utils/cache_helper.dart';
+import 'package:riverpod_go_router/core/api/end_points.dart';
+import 'package:riverpod_go_router/core/api/status_code.dart';
+import 'package:riverpod_go_router/core/constants/constants.dart';
+import 'package:riverpod_go_router/core/utils/cache_helper.dart';
 
 import '../../../../core/error/exceptions.dart';
 import '../../../../core/utils/constants.dart';
@@ -15,6 +16,8 @@ abstract class LoginService {
 }
 
 class LoginServiceImpl implements LoginService {
+  final CacheHelper cacheHelper;
+  LoginServiceImpl(this.cacheHelper);
   @override
   Future<LoginStatus> userlogin({required String email}) async {
     try {
@@ -42,8 +45,9 @@ class LoginServiceImpl implements LoginService {
   void saveUserAuth(http.Response response) {
     final userAccessToken = json.decode(response.body)['access_token'] ?? "";
     final refreshToken = json.decode(response.body)['refresh_token'] ?? "";
-    CacheHelper.savePrefs(
-        key: Constants.userAccessToken, value: userAccessToken);
-    CacheHelper.savePrefs(key: Constants.userRefreshToken, value: refreshToken);
+    cacheHelper
+        .savePrefs(key: Constants.userAccessToken, value: userAccessToken)
+        .then((value) => print("=======object"));
+    cacheHelper.savePrefs(key: Constants.userRefreshToken, value: refreshToken);
   }
 }
