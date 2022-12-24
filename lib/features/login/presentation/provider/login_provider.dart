@@ -44,7 +44,7 @@ class LoginProvider extends ChangeNotifier {
 
   void checkUserStatus() {
     final userToken =
-        CacheHelper.getPrefs(key: Constants.userAccessToken) ?? "";
+        cacheHelper.getPrefs(key: Constants.userAccessToken) ?? "";
     if (userToken.toString().isEmpty) {
       _userStatus = LoginStatus.unknown;
       notifyListeners();

@@ -14,11 +14,13 @@ abstract class UsersService {
 }
 
 class UsersServiceImpl extends UsersService {
+  final CacheHelper cacheHelper;
+  UsersServiceImpl({required this.cacheHelper});
   @override
   Future<List<Users>> getUsers(int page) async {
     Log.d(page.toString());
     try {
-      final token = CacheHelper.getPrefs(key: Constants.userAccessToken);
+      final token = cacheHelper.getPrefs(key: Constants.userAccessToken);
       final response = await http.get(
           Uri.parse("${ApiEndPoints.users}?limit=10&page=$page"),
           headers: {
@@ -35,8 +37,8 @@ class UsersServiceImpl extends UsersService {
 
         return users;
       } else if (response.statusCode == StatusCode.unauthorized) {
-        CacheHelper.clearPrefs(key: Constants.userAccessToken);
-        CacheHelper.clearPrefs(key: Constants.userRefreshToken);
+        cacheHelper.clearPrefs(key: Constants.userAccessToken);
+        cacheHelper.clearPrefs(key: Constants.userRefreshToken);
         throw UnauthorizedException();
       } else {
         throw ServerException();
